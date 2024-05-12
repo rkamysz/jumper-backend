@@ -1,36 +1,71 @@
 import cors from 'cors';
 import express, { Express } from 'express';
 import helmet from 'helmet';
-import { pino } from 'pino';
+import * as http from 'http';
+import { Logger } from 'pino';
 
-import { healthCheckRouter } from '@/api/healthCheck/healthCheckRouter';
-import { openAPIRouter } from '@/api-docs/openAPIRouter';
 import errorHandler from '@/common/middleware/errorHandler';
 import rateLimiter from '@/common/middleware/rateLimiter';
 import requestLogger from '@/common/middleware/requestLogger';
 import { env } from '@/common/utils/envConfig';
 
-const logger = pino({ name: 'server start' });
-const app: Express = express();
+import { CreateAccountRoute } from './api/account/create-account.route';
+import { LoginRoute } from './api/account/login.route';
+import { HealthCheckRoute } from './api/health-check/health-check.route';
+import { ListTokensRoute } from './api/tokens/list-tokens.route';
+import { ExpressRouter } from './common/router';
+import { AnyFunction, Server } from './common/types';
 
-// Set the application to trust the reverse proxy
-app.set('trust proxy', true);
+export class ExpressServer implements Server<Express> {
+  static build(container: any, logger: Logger) {
+    const app: Express = express();
 
-// Middlewares
-app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
-app.use(helmet());
-app.use(rateLimiter);
+    // Set the application to trust the reverse proxy
+    app.set('trust proxy', true);
 
-// Request logging
-app.use(requestLogger);
+    // Middlewares
+    app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
+    app.use(helmet());
+    app.use(rateLimiter);
 
-// Routes
-app.use('/health-check', healthCheckRouter);
+    // Request logging
+    app.use(requestLogger);
 
-// Swagger UI
-app.use(openAPIRouter);
+    // Routes
+    const router = new ExpressRouter(app, 'v1');
+    router.mount(LoginRoute.create(() => {}));
+    router.mount(CreateAccountRoute.create(() => {}));
+    router.mount(ListTokensRoute.create(() => {}));
+    router.mount(HealthCheckRoute.create());
 
-// Error handlers
-app.use(errorHandler());
+    // Swagger UI
+    router.buildDocumentation('/swagger.json');
 
-export { app, logger };
+    // Error handlers
+    app.use(errorHandler());
+
+    return new ExpressServer(app, logger);
+  }
+
+  private _server: http.Server | undefined;
+
+  constructor(
+    public readonly app: Express,
+    private logger: Logger
+  ) {}
+
+  start() {
+    if (!this._server) {
+      this._server = this.app.listen(env.PORT, () => {
+        const { NODE_ENV, HOST, PORT } = env;
+        this.logger.info(`Server (${NODE_ENV}) running on port http://${HOST}:${PORT}`);
+      });
+    }
+  }
+
+  close(callback: AnyFunction) {
+    if (this._server) {
+      return this._server.close(callback);
+    }
+  }
+}

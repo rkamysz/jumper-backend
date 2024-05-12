@@ -1,10 +1,11 @@
-import { env } from '@/common/utils/envConfig';
-import { app, logger } from '@/server';
+import { pino } from 'pino';
 
-const server = app.listen(env.PORT, () => {
-  const { NODE_ENV, HOST, PORT } = env;
-  logger.info(`Server (${NODE_ENV}) running on port http://${HOST}:${PORT}`);
-});
+import { ExpressServer } from './server';
+
+const logger = pino({ name: 'server start' });
+const server = ExpressServer.build({}, logger);
+
+server.start();
 
 const onCloseSignal = () => {
   logger.info('sigint received, shutting down');
