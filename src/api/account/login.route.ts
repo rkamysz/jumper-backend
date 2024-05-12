@@ -2,11 +2,13 @@ import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 
 import { createApiResponse } from '@/api-docs/openAPIResponseBuilders';
+import { authenticateAddressMiddleware } from '@/common/middleware/authenticate-address.middleware';
+import { recoverAddressMiddleware } from '@/common/middleware/recover-address.middleware';
 import { AnyFunction, Route } from '@/common/types';
 
 export class LoginRoute implements Route {
   static create(handler: AnyFunction) {
-    const path = '/login';
+    const path = '/account/login';
     const tags = ['Login'];
     const method = 'get';
     const registry = new OpenAPIRegistry();
@@ -18,7 +20,7 @@ export class LoginRoute implements Route {
       responses: createApiResponse(z.null(), 'Success'),
     });
 
-    return new LoginRoute(path, method, handler, registry, []);
+    return new LoginRoute(path, method, handler, registry, [recoverAddressMiddleware, authenticateAddressMiddleware]);
   }
 
   constructor(
@@ -26,6 +28,6 @@ export class LoginRoute implements Route {
     public readonly method: 'get' | 'post',
     public readonly handler: AnyFunction,
     public readonly registry: OpenAPIRegistry,
-    public readonly middlewares: any[]
+    public readonly middlewares: AnyFunction[]
   ) {}
 }

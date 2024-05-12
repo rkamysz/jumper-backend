@@ -17,7 +17,7 @@ enum LogLevel {
   Silent = 'silent',
 }
 
-type PinoCustomProps = {
+type LoggerCustomProps = {
   request: Request;
   response: Response;
   error: Error;
@@ -47,7 +47,7 @@ const customAttributeKeys: CustomAttributeKeys = {
   responseTime: 'timeTaken',
 };
 
-const customProps = (req: Request, res: Response): PinoCustomProps => ({
+const customProps = (req: Request, res: Response): LoggerCustomProps => ({
   request: req,
   response: res,
   error: res.locals.err,

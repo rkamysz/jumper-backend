@@ -2,19 +2,18 @@ import cors from 'cors';
 import express, { Express } from 'express';
 import helmet from 'helmet';
 import * as http from 'http';
-import { Logger } from 'pino';
 
-import errorHandler from '@/common/middleware/errorHandler';
-import rateLimiter from '@/common/middleware/rateLimiter';
-import requestLogger from '@/common/middleware/requestLogger';
+import rateLimiter from '@/common/middleware/rate-limiter.middleware';
+import requestLogger from '@/common/middleware/request-logger.middleware';
 import { env } from '@/common/utils/envConfig';
 
 import { CreateAccountRoute } from './api/account/create-account.route';
 import { LoginRoute } from './api/account/login.route';
 import { HealthCheckRoute } from './api/health-check/health-check.route';
 import { ListTokensRoute } from './api/tokens/list-tokens.route';
+import { errorHandler } from './common/middleware/error-handler.middleware';
 import { ExpressRouter } from './common/router';
-import { AnyFunction, Server } from './common/types';
+import { AnyFunction, Logger, Server } from './common/types';
 
 export class ExpressServer implements Server<Express> {
   static build(container: any, logger: Logger) {
@@ -42,7 +41,7 @@ export class ExpressServer implements Server<Express> {
     router.buildDocumentation('/swagger.json');
 
     // Error handlers
-    app.use(errorHandler());
+    app.use(errorHandler(logger));
 
     return new ExpressServer(app, logger);
   }
