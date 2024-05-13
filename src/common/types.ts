@@ -1,8 +1,9 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import * as pino from 'pino';
 
-export type AnyFunction<T = void | Promise<void>> = (...args: any[]) => T;
-export type Middleware<T = void | Promise<void>> = () => T;
+export type AnyObject = { [key: string]: unknown };
+export type AnyFunction<T = any> = (...args: any[]) => T;
+export type Middleware<T = any> = () => T;
 export interface Route {
   path: string;
   method: string;

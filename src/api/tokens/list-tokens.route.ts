@@ -1,15 +1,18 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
+import { Container } from 'inversify';
 import { z } from 'zod';
 
 import { createApiResponse } from '@/api-docs/openAPIResponseBuilders';
 import { AnyFunction, Route } from '@/common/types';
+import { TokensController } from '@/features';
 
 export class ListTokensRoute implements Route {
-  static create(handler: AnyFunction) {
+  static create(container: Container) {
     const path = '/login';
     const tags = ['Login'];
     const method = 'get';
     const registry = new OpenAPIRegistry();
+    const controller = container.get<TokensController>(TokensController.Token);
 
     registry.registerPath({
       method,
@@ -18,7 +21,7 @@ export class ListTokensRoute implements Route {
       responses: createApiResponse(z.null(), 'Success'),
     });
 
-    return new ListTokensRoute(path, method, handler, registry, []);
+    return new ListTokensRoute(path, method, controller.listAccountTokens.bind(controller), registry, []);
   }
 
   constructor(

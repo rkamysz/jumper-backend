@@ -15,7 +15,9 @@
     "noPropertyAccessFromIndexSignature": false,
     "skipLibCheck": true,
     "ignoreDeprecations": "5.0",
-    "types": ["vitest/globals"]
+    "types": ["vitest/globals", "reflect-metadata"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "extends": [],
   "exclude": ["node_modules"],

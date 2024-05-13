@@ -2,6 +2,7 @@ import cors from 'cors';
 import express, { Express } from 'express';
 import helmet from 'helmet';
 import * as http from 'http';
+import { Container } from 'inversify';
 
 import rateLimiter from '@/common/middleware/rate-limiter.middleware';
 import requestLogger from '@/common/middleware/request-logger.middleware';
@@ -16,7 +17,7 @@ import { ExpressRouter } from './common/router';
 import { AnyFunction, Logger, Server } from './common/types';
 
 export class ExpressServer implements Server<Express> {
-  static build(container: any, logger: Logger) {
+  static build(container: Container, logger: Logger) {
     const app: Express = express();
 
     // Set the application to trust the reverse proxy
@@ -33,8 +34,8 @@ export class ExpressServer implements Server<Express> {
     // Routes
     const router = new ExpressRouter(app, 'v1');
     router.mount(LoginRoute.create(() => {}));
-    router.mount(CreateAccountRoute.create(() => {}));
-    router.mount(ListTokensRoute.create(() => {}));
+    router.mount(CreateAccountRoute.create(container));
+    router.mount(ListTokensRoute.create(container));
     router.mount(HealthCheckRoute.create());
 
     // Swagger UI
