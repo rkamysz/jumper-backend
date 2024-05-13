@@ -6,7 +6,7 @@ import { ExpressServer } from './server';
 
 const bootstrap = async () => {
   const logger = pino({ name: 'server start' });
-  const container = await buildContainer(env);
+  const container = await buildContainer(env, logger);
   const server = ExpressServer.build(container, logger);
 
   server.start();

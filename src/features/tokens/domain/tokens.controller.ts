@@ -1,11 +1,16 @@
 import { Result } from '@soapjs/soap';
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
+
+import { Token } from './entities/token';
+import { FetchBalancesAndMetadata } from './use-cases/fetch-balances-and-metadate.use-case';
 
 @injectable()
 export class TokensController {
   public static Token = 'TokensController';
 
-  public async listAccountTokens(): Promise<Result<any>> {
-    return Result.withContent({});
+  constructor(@inject(FetchBalancesAndMetadata.Token) private fetchBalancesAndMetadata: FetchBalancesAndMetadata) {}
+
+  public async listTokens(address: string): Promise<Result<Token[]>> {
+    return this.fetchBalancesAndMetadata.execute(address);
   }
 }

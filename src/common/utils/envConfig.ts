@@ -10,8 +10,15 @@ export type Config = CleanedEnv<any> & {
   CORS_ORIGIN: string;
   COMMON_RATE_LIMIT_MAX_REQUESTS: number;
   COMMON_RATE_LIMIT_WINDOW_MS: number;
-  ETHERSCAN_IO_API_KEY: string;
-  ETHERSCAN_IO_LIST_TOKENS_OFFSET: number;
+  ETHERSCAN_IO_API_KEY?: string;
+  LIST_TOKENS_CHUNK_SIZE: number;
+  ALCHEMY_API_KEY: string;
+  ALCHEMY_NETWORK: string;
+  MONGO_DB_NAME?: string;
+  MONGO_HOSTS?: string;
+  MONGO_PORTS?: number;
+  MONGO_USER?: string;
+  MONGO_PASSWORD?: string;
 };
 
 export const env: Config = cleanEnv(process.env, {
@@ -22,5 +29,7 @@ export const env: Config = cleanEnv(process.env, {
   COMMON_RATE_LIMIT_MAX_REQUESTS: num({ devDefault: testOnly(1000) }),
   COMMON_RATE_LIMIT_WINDOW_MS: num({ devDefault: testOnly(1000) }),
   ETHERSCAN_IO_API_KEY: str({ devDefault: testOnly('') }),
-  ETHERSCAN_IO_LIST_TOKENS_OFFSET: num({ default: 100 }),
+  ALCHEMY_API_KEY: str({ devDefault: testOnly('') }),
+  ALCHEMY_NETWORK: str({ devDefault: testOnly('eth-testnet') }),
+  LIST_TOKENS_CHUNK_SIZE: num({ default: 100 }),
 });

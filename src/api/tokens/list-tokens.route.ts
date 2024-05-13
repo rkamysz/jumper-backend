@@ -21,7 +21,7 @@ export class ListTokensRoute implements Route {
       responses: createApiResponse(z.null(), 'Success'),
     });
 
-    return new ListTokensRoute(path, method, controller.listAccountTokens.bind(controller), registry, []);
+    return new ListTokensRoute(path, method, controller.listTokens.bind(controller), registry, []);
   }
 
   constructor(
