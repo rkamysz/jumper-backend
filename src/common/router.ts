@@ -27,6 +27,7 @@ export class ExpressRouter {
     if (Array.isArray(routes)) {
       routes.forEach((route) => {
         const { path, middlewares, method, handler, registry } = route;
+
         if (method === 'get') {
           this.app.get(this.buildUrl(path), middlewares, handler);
         } else if (method === 'post') {

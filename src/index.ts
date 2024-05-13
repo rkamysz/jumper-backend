@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 import { pino } from 'pino';
 
 import { env } from './common/utils/envConfig';

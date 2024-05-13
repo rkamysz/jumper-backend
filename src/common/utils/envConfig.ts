@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { CleanedEnv, cleanEnv, host, num, port, str, testOnly } from 'envalid';
+import { bool, CleanedEnv, cleanEnv, host, num, port, str, testOnly } from 'envalid';
 
 dotenv.config();
 
@@ -14,6 +14,7 @@ export type Config = CleanedEnv<any> & {
   LIST_TOKENS_CHUNK_SIZE: number;
   ALCHEMY_API_KEY: string;
   ALCHEMY_NETWORK: string;
+  USE_CACHE: boolean;
   MONGO_DB_NAME?: string;
   MONGO_HOSTS?: string;
   MONGO_PORTS?: number;
@@ -32,4 +33,5 @@ export const env: Config = cleanEnv(process.env, {
   ALCHEMY_API_KEY: str({ devDefault: testOnly('') }),
   ALCHEMY_NETWORK: str({ devDefault: testOnly('eth-testnet') }),
   LIST_TOKENS_CHUNK_SIZE: num({ default: 100 }),
+  USE_CACHE: bool({ default: true }),
 });

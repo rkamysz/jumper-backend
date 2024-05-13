@@ -3,13 +3,16 @@ import { Container } from 'inversify';
 import { z } from 'zod';
 
 import { createApiResponse } from '@/api-docs/openAPIResponseBuilders';
+import { isValidAddressMiddleware } from '@/common/middleware/is-valid-address.middleware';
 import { AnyFunction, Route } from '@/common/types';
 import { TokensController } from '@/features';
 
+import { listTokensHandler } from './list-tokens.handler';
+
 export class ListTokensRoute implements Route {
   static create(container: Container) {
-    const path = '/login';
-    const tags = ['Login'];
+    const path = '/tokens';
+    const tags = ['Tokens'];
     const method = 'get';
     const registry = new OpenAPIRegistry();
     const controller = container.get<TokensController>(TokensController.Token);
@@ -21,7 +24,7 @@ export class ListTokensRoute implements Route {
       responses: createApiResponse(z.null(), 'Success'),
     });
 
-    return new ListTokensRoute(path, method, controller.listTokens.bind(controller), registry, []);
+    return new ListTokensRoute(path, method, listTokensHandler(controller), registry, [isValidAddressMiddleware]);
   }
 
   constructor(

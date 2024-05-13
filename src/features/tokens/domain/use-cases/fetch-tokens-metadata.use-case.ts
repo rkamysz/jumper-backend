@@ -2,6 +2,7 @@ import { Result, UseCase, Where } from '@soapjs/soap';
 import { inject, injectable } from 'inversify';
 
 import { Logger } from '@/common/types';
+import { Config } from '@/common/utils/envConfig';
 
 import { TokenMetadata } from '../entities/token-metadata';
 import { TokenMetadataRepository } from '../repositories/token-metadata.repository';
@@ -14,10 +15,15 @@ export class FetchTokensMetadata implements UseCase<TokenMetadata[]> {
   constructor(
     @inject(EthereumExplorerService.Token) private explorerService: EthereumExplorerService,
     @inject(TokenMetadataRepository.Token) private metadataRepository: TokenMetadataRepository,
-    @inject('logger') private logger: Logger
+    @inject('logger') private logger: Logger,
+    @inject('config') private config: Config
   ) {}
 
   async execute(address: string, contractAddresses: string[]): Promise<Result<TokenMetadata[]>> {
+    // Skip the cache to always have up-to-date data (when there is no cron jobs or indexer)
+    if (this.config.USE_CACHE === false) {
+      return this.explorerService.fetchTokensMetadata(address, contractAddresses);
+    }
     // Try fetch metadata from the database
     const { content: storedMetadata, failure: metadataFromRepoFailure } = await this.metadataRepository.find({
       where: new Where().valueOf('contract_address').isIn(contractAddresses),
@@ -51,6 +57,7 @@ export class FetchTokensMetadata implements UseCase<TokenMetadata[]> {
     if (failure) {
       return Result.withFailure(failure);
     }
+
     const storeResult = await this.metadataRepository.add(content);
 
     if (storeResult.isFailure) {

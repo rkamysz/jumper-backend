@@ -27,6 +27,7 @@ export const buildContainer = async (config: Config, logger: Logger) => {
     .bind<EthereumExplorerService>(EthereumExplorerService.Token)
     .toConstantValue(new AlchemyService({ apiKey: config.ALCHEMY_API_KEY, batchSize: config.LIST_TOKENS_CHUNK_SIZE }));
   ioc.bind<Logger>('logger').toConstantValue(logger);
+  ioc.bind<Config>('config').toConstantValue(config);
 
   ioc.bind<TokenMetadataRepository>(TokenMetadataRepository.Token).toConstantValue(
     new RepositoryImpl({

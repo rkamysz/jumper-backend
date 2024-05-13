@@ -16,8 +16,11 @@ export class AlchemyService implements EthereumExplorerService {
     this.client = new Alchemy(config);
   }
 
-  private getTokensMetadata(tokenAddresses: string[]) {
-    const metadataPromises = tokenAddresses.map((address) => this.client.core.getTokenMetadata(address));
+  private async getTokensMetadata(tokenAddresses: string[]): Promise<TokenMetadata[]> {
+    const metadataPromises = tokenAddresses.map(async (address) => {
+      const metadata = await this.client.core.getTokenMetadata(address);
+      return new TokenMetadata(address, metadata.name, metadata.symbol, metadata.logo, metadata.decimals);
+    });
     return Promise.all(metadataPromises);
   }
 
@@ -56,11 +59,8 @@ export class AlchemyService implements EthereumExplorerService {
       const list = [];
 
       for (const chunk of chunks) {
-        const result = await this.getTokensMetadata(chunk);
-        for (const metadata of result) {
-          // should be done in the mapper
-          list.push(new TokenMetadata(address, metadata.name, metadata.symbol, metadata.logo, metadata.decimals));
-        }
+        const metadatas = await this.getTokensMetadata(chunk);
+        list.push(...metadatas);
       }
       return Result.withContent(list);
     } catch (error) {
