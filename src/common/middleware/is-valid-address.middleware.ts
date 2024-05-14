@@ -3,6 +3,15 @@ import { isAddress } from 'web3-validator';
 
 import { HttpError } from '../api-errors';
 
+/**
+ * Middleware to validate Ethereum address query parameter.
+ *
+ * @param {Request} req - Express request object.
+ * @param {Response} res - Express response object.
+ * @param {NextFunction} next - Express next middleware function.
+ *
+ * @throws {HttpError} Throws a 400 error if the 'address' query parameter is missing or invalid.
+ */
 export const isValidAddressMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const address = req.query['address'];
 

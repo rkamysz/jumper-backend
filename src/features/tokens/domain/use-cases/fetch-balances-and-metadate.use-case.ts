@@ -5,15 +5,34 @@ import { Token } from '../entities/token';
 import { EthereumExplorerService } from '../services/ethereum-explorer.service';
 import { FetchTokensMetadataUseCase } from './fetch-tokens-metadata.use-case';
 
+/**
+ * @injectable
+ * Use case for fetching token balances and metadata.
+ * Implements the UseCase interface for Token arrays.
+ *
+ * @implements {UseCase<Token[]>}
+ */
 @injectable()
 export class FetchBalancesAndMetadataUseCase implements UseCase<Token[]> {
   static Token = 'FetchBalancesAndMetadata';
 
+  /**
+   * Creates an instance of FetchBalancesAndMetadataUseCase.
+   *
+   * @param {EthereumExplorerService} explorerService - The service to fetch token balances from the Ethereum blockchain.
+   * @param {FetchTokensMetadataUseCase} fetchTokensMetadata - The use case to fetch token metadata.
+   */
   constructor(
     @inject(EthereumExplorerService.Token) private explorerService: EthereumExplorerService,
     @inject(FetchTokensMetadataUseCase.Token) private fetchTokensMetadata: FetchTokensMetadataUseCase
   ) {}
 
+  /**
+   * Executes the use case to fetch token balances and metadata.
+   *
+   * @param {string} address - The address to fetch token balances and metadata for.
+   * @returns {Promise<Result<Token[]>>} The result of the token balances and metadata fetch operation.
+   */
   async execute(address: string): Promise<Result<Token[]>> {
     // Fetch token balances
     const { content: balances, failure: fetchBalancesFailure } = await this.explorerService.fetchTokenBalances(address);

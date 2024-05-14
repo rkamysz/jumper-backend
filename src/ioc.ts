@@ -18,6 +18,21 @@ import {
 import { AlchemyService } from './features/tokens/data/services/alchemy.service';
 import { EthereumExplorerService } from './features/tokens/domain/services/ethereum-explorer.service';
 
+/**
+ * The main configuration file contains all the necessary bindings and configurations for the application.
+ * Having a single configuration file helps to centralize the setup and management of dependencies,
+ * ensuring that all services, repositories, controllers, and use cases are properly configured and injected.
+ * This approach simplifies maintenance and promotes a clear structure, making it easier to manage
+ * dependencies and their configurations in one place.
+ */
+
+/**
+ * Builds and configures the Inversify container with all necessary bindings.
+ *
+ * @param {Config} config - The configuration object containing environment variables and other settings.
+ * @param {Logger} logger - The logger for logging activities within the application.
+ * @returns {Promise<Container>} The configured Inversify container.
+ */
 export const buildContainer = async (config: Config, logger: Logger) => {
   const ioc = new Container();
   const configVars = new ConfigVars();

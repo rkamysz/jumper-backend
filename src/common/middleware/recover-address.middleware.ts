@@ -3,6 +3,19 @@ import { NextFunction, Request, Response } from 'express';
 
 import { HttpError } from '../api-errors';
 
+/**
+ * Middleware to recover the Ethereum address from a given signature and original message.
+ *
+ * @param {Request} req - Express request object.
+ * @param {Response} res - Express response object.
+ * @param {NextFunction} next - Express next middleware function.
+ *
+ * @property {string} req.body.signature - The signature to recover the address from.
+ * @property {string} req.body.originalMessage - The original message that was signed.
+ * @property {string} req.body.address - The expected Ethereum address (not used in the recovery process).
+ *
+ * @throws {HttpError} Throws a 500 error if any error occurs during the signature recovery process.
+ */
 export const recoverAddressMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const { signature, originalMessage, address } = req.body;
   try {

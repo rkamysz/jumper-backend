@@ -16,7 +16,20 @@ import { errorHandler } from './common/middleware/error-handler.middleware';
 import { ExpressRouter } from './common/router';
 import { AnyFunction, Logger, Server } from './common/types';
 
+/**
+ * Class representing an Express server.
+ * Implements the Server interface for Express applications.
+ *
+ * @implements {Server<Express>}
+ */
 export class ExpressServer implements Server<Express> {
+  /**
+   * Builds and configures an Express server.
+   *
+   * @param {Container} container - The Inversify container for dependency injection.
+   * @param {Logger} logger - The logger for logging server activities.
+   * @returns {ExpressServer} The configured Express server instance.
+   */
   static build(container: Container, logger: Logger) {
     const app: Express = express();
 
@@ -49,11 +62,20 @@ export class ExpressServer implements Server<Express> {
 
   private _server: http.Server | undefined;
 
+  /**
+   * Creates an instance of ExpressServer.
+   *
+   * @param {Express} app - The Express application instance.
+   * @param {Logger} logger - The logger for logging server activities.
+   */
   constructor(
     public readonly app: Express,
     private logger: Logger
   ) {}
 
+  /**
+   * Starts the Express server.
+   */
   start() {
     if (!this._server) {
       this._server = this.app.listen(env.PORT, () => {
@@ -63,6 +85,11 @@ export class ExpressServer implements Server<Express> {
     }
   }
 
+  /**
+   * Closes the Express server.
+   *
+   * @param {AnyFunction} callback - The callback to invoke when the server is closed.
+   */
   close(callback: AnyFunction) {
     if (this._server) {
       return this._server.close(callback);

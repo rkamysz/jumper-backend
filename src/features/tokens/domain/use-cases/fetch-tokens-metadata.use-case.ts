@@ -8,10 +8,25 @@ import { TokenMetadata } from '../entities/token-metadata';
 import { TokenMetadataRepository } from '../repositories/token-metadata.repository';
 import { EthereumExplorerService } from '../services/ethereum-explorer.service';
 
+/**
+ * @injectable
+ * Use case for fetching token metadata.
+ * Implements the UseCase interface for TokenMetadata arrays.
+ *
+ * @implements {UseCase<TokenMetadata[]>}
+ */
 @injectable()
 export class FetchTokensMetadataUseCase implements UseCase<TokenMetadata[]> {
   static Token = 'FetchTokensMetadata';
 
+  /**
+   * Creates an instance of FetchTokensMetadataUseCase.
+   *
+   * @param {EthereumExplorerService} explorerService - The service to fetch token metadata from the Ethereum blockchain.
+   * @param {TokenMetadataRepository} metadataRepository - The repository to store and retrieve token metadata.
+   * @param {Logger} logger - The logger for logging errors and information.
+   * @param {Config} config - The configuration object for the environment.
+   */
   constructor(
     @inject(EthereumExplorerService.Token) private explorerService: EthereumExplorerService,
     @inject(TokenMetadataRepository.Token) private metadataRepository: TokenMetadataRepository,
@@ -19,6 +34,13 @@ export class FetchTokensMetadataUseCase implements UseCase<TokenMetadata[]> {
     @inject('config') private config: Config
   ) {}
 
+  /**
+   * Executes the use case to fetch token metadata.
+   *
+   * @param {string} address - The address to fetch token metadata for.
+   * @param {string[]} contractAddresses - The list of token contract addresses to fetch metadata for.
+   * @returns {Promise<Result<TokenMetadata[]>>} The result of the token metadata fetch operation.
+   */
   async execute(address: string, contractAddresses: string[]): Promise<Result<TokenMetadata[]>> {
     // Skip the cache to always have up-to-date data (when there is no cron jobs or indexer)
     if (this.config.USE_CACHE === false) {
@@ -52,6 +74,14 @@ export class FetchTokensMetadataUseCase implements UseCase<TokenMetadata[]> {
     return Result.withContent(allMetadata);
   }
 
+  /**
+   * Fetches missing token metadata from the Ethereum explorer service and stores it in the repository.
+   *
+   * @private
+   * @param {string} address - The address to fetch token metadata for.
+   * @param {string[]} contracts - The list of token contract addresses to fetch metadata for.
+   * @returns {Promise<Result<TokenMetadata[]>>} The result of the token metadata fetch and store operation.
+   */
   private async fetchMissingMetadata(address: string, contracts: string[]): Promise<Result<TokenMetadata[]>> {
     const { content, failure } = await this.explorerService.fetchTokensMetadata(address, contracts);
     if (failure) {
