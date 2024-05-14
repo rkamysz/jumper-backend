@@ -1,3 +1,4 @@
+import { verifyMessage } from 'ethers';
 import { NextFunction, Request, Response } from 'express';
 
 import { HttpError } from '../api-errors';
@@ -16,8 +17,8 @@ import { HttpError } from '../api-errors';
  */
 export const authenticateAddressMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { recoveredAddress } = res.locals;
-    const { address } = res.locals.originalBody;
+    const { address, signature, message } = req.body;
+    const recoveredAddress = verifyMessage(message, signature);
 
     if (recoveredAddress.toLowerCase() === address.toLowerCase()) {
       next();

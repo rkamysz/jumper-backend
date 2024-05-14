@@ -29,6 +29,11 @@ export class GetAccountUseCase implements UseCase<Account> {
    * @returns {Promise<Result<Account>>} The result of the account creation, containing either the account or a failure.
    */
   async execute(address: string): Promise<Result<Account>> {
+    /**
+     * BUG in SoapJS:
+     * The Where clause will not work because checking the type of provided params does not work.
+     * regardless of the filters used, find returns all records. The bug has already been reported.
+     */
     const findResult = await this.accountRepository.find({ where: new Where().valueOf('address').isEq(address) });
 
     if (findResult.isFailure) {
@@ -36,10 +41,13 @@ export class GetAccountUseCase implements UseCase<Account> {
       return Result.withFailure(findResult.failure);
     }
 
-    if (findResult.content.length === 0) {
+    // way to bypass the error (temporary)
+    const account = findResult.content.find((account) => account.address === address);
+
+    if (!account) {
       return Result.withFailure(new AccountNotFoundError());
     }
 
-    return Result.withContent(findResult.content[0]);
+    return Result.withContent(account);
   }
 }

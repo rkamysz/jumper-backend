@@ -35,6 +35,11 @@ export class CreateAccountUseCase implements UseCase<Account> {
       return Result.withFailure(countResult.failure);
     }
 
+    /**
+     * BUG in SoapJS:
+     * The Where clause will not work because checking the type of provided params does not work.
+     * regardless of the filters used, find returns all records. The bug has already been reported.
+     */
     const findResult = await this.accountRepository.find({ where: new Where().valueOf('address').isEq(address) });
 
     if (findResult.isFailure) {
@@ -42,12 +47,13 @@ export class CreateAccountUseCase implements UseCase<Account> {
       return Result.withFailure(findResult.failure);
     }
 
-    if (findResult.content.length > 0) {
+    // way to bypass the error (temporary)
+    if (findResult.content.findIndex((account) => account.address === address) > -1) {
       return Result.withFailure(new Error('Account already exists'));
     }
 
     const { content, failure } = await this.accountRepository.add([
-      new Account(address, `user_${countResult.content}`),
+      new Account(address, `user_${countResult.content || 0}`),
     ]);
 
     if (failure) {

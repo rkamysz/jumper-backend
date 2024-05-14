@@ -4,7 +4,6 @@ import { z } from 'zod';
 
 import { createApiResponse } from '@/api-docs/openAPIResponseBuilders';
 import { authenticateAddressMiddleware } from '@/common/middleware/authenticate-address.middleware';
-import { recoverAddressMiddleware } from '@/common/middleware/recover-address.middleware';
 import { AnyFunction, Route } from '@/common/types';
 import { AccountController } from '@/features';
 
@@ -26,7 +25,6 @@ export class CreateAccountRoute implements Route {
     });
 
     return new CreateAccountRoute(path, method, createAccountHandler(controller), registry, [
-      recoverAddressMiddleware,
       authenticateAddressMiddleware,
     ]);
   }
