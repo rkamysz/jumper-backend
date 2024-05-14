@@ -12,6 +12,7 @@ Key features:
 - Configurable cache mechanism for fetching token metadata (currently, only a flag is used to demonstrate caching capabilities).
 
 Future enhancements:
+- Fix/Add Swagger Docs
 - Add session management to control who can access the endpoints.
 - Integrate a monitoring system like New Relic for error reporting.
 - Use Redis sorted-sets for implementing a leaderboard feature.

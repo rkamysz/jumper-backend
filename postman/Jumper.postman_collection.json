@@ -1,0 +1,66 @@
+{
+	"info": {
+		"_postman_id": "f977b784-ef3d-4238-bb25-bb3762d7b895",
+		"name": "Jumper",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8044281"
+	},
+	"item": [
+		{
+			"name": "List Tokens",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/tokens/list?address=dupa",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"tokens",
+						"list"
+					],
+					"query": [
+						{
+							"key": "address",
+							"value": "dupa"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Account",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"signature\": \"\",\n    \"originalMessage\": \"\",\n    \"address\": \"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/account/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"account",
+						"create"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
