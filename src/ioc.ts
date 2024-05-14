@@ -11,6 +11,7 @@ import {
   CreateAccountUseCase,
   FetchBalancesAndMetadataUseCase,
   FetchTokensMetadataUseCase,
+  GetAccountUseCase,
   TokenMetadataMongoMapper,
   TokenMetadataRepository,
   TokensController,
@@ -75,6 +76,7 @@ export const buildContainer = async (config: Config, logger: Logger) => {
   ioc.bind<FetchBalancesAndMetadataUseCase>(FetchBalancesAndMetadataUseCase.Token).to(FetchBalancesAndMetadataUseCase);
   ioc.bind<FetchTokensMetadataUseCase>(FetchTokensMetadataUseCase.Token).to(FetchTokensMetadataUseCase);
   ioc.bind<CreateAccountUseCase>(CreateAccountUseCase.Token).to(CreateAccountUseCase);
+  ioc.bind<GetAccountUseCase>(GetAccountUseCase.Token).to(GetAccountUseCase);
 
   return ioc;
 };

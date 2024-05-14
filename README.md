@@ -31,7 +31,7 @@ Future enhancements:
 1. Clone the repository:
     ```bash
     git clone https://github.com/rkamysz/jumper-backend.git
-    cd your-repository
+    cd jumper-backend
     ```
 
 2. Install dependencies:

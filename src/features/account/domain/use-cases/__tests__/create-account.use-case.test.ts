@@ -10,6 +10,7 @@ import { CreateAccountUseCase } from '../create-account.use-case';
 describe('CreateAccountUseCase', () => {
   const mockAccountRepository = {
     count: vi.fn(),
+    find: vi.fn(),
     add: vi.fn(),
   };
 
@@ -27,8 +28,10 @@ describe('CreateAccountUseCase', () => {
 
   it('should return failure if accountRepository.add fails', async () => {
     const countResult = Result.withContent(0);
+    const findResult = Result.withContent([]);
     const failureResult = Result.withFailure(new Error('Add error'));
     mockAccountRepository.count.mockResolvedValue(countResult);
+    mockAccountRepository.find.mockResolvedValue(findResult);
     mockAccountRepository.add.mockResolvedValue(failureResult);
 
     const result = await useCase.execute('0x123');
@@ -41,7 +44,9 @@ describe('CreateAccountUseCase', () => {
     const countResult = Result.withContent(0);
     const account = new Account('0x123', 'user_0');
     const addResult = Result.withContent([account]);
+    const findResult = Result.withContent([]);
     mockAccountRepository.count.mockResolvedValue(countResult);
+    mockAccountRepository.find.mockResolvedValue(findResult);
     mockAccountRepository.add.mockResolvedValue(addResult);
 
     const result = await useCase.execute('0x123');

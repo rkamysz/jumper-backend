@@ -17,8 +17,8 @@ import { HttpError } from '../api-errors';
  * @throws {HttpError} Throws a 500 error if any error occurs during the signature recovery process.
  */
 export const recoverAddressMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-  const { signature, originalMessage, address } = req.body;
   try {
+    const { signature, originalMessage, address } = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
     const msgBuffer = toBuffer(originalMessage);
     const msgHash = hashPersonalMessage(msgBuffer);
     const signatureParams = fromRpcSig(signature);

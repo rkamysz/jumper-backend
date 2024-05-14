@@ -6,13 +6,20 @@ import { describe, expect, it, vi } from 'vitest';
 import { AccountController } from '../account.controller';
 import { Account } from '../entities/account';
 import { CreateAccountUseCase } from '../use-cases/create-account.use-case';
+import { GetAccountUseCase } from '../use-cases/get-account.use-case';
 
 describe('AccountController', () => {
   const mockCreateAccountUseCase = {
     execute: vi.fn(),
   };
+  const mockGetAccountUseCase = {
+    execute: vi.fn(),
+  };
 
-  const controller = new AccountController(mockCreateAccountUseCase as unknown as CreateAccountUseCase);
+  const controller = new AccountController(
+    mockCreateAccountUseCase as unknown as CreateAccountUseCase,
+    mockGetAccountUseCase as unknown as GetAccountUseCase
+  );
 
   it('should return failure if CreateAccountUseCase.execute fails', async () => {
     const failureResult = Result.withFailure(new Error('DB error'));

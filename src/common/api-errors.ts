@@ -17,8 +17,8 @@ export class HttpError extends Error {
     public readonly error: string | Error,
     public readonly cause?: Error
   ) {
-    super(`[${status | 500}] ${typeof error === 'string' ? error : error.message}`);
-    this._status = status | 500;
+    super(`[${status || 500}] ${typeof error === 'string' ? error : error.message}`);
+    this._status = status || 500;
   }
 
   /**

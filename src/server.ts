@@ -9,7 +9,7 @@ import requestLogger from '@/common/middleware/request-logger.middleware';
 import { env } from '@/common/utils/envConfig';
 
 import { CreateAccountRoute } from './api/account/create-account.route';
-import { LoginRoute } from './api/account/login.route';
+import { GetAccountRoute } from './api/account/get-account.route';
 import { HealthCheckRoute } from './api/health-check/health-check.route';
 import { ListTokensRoute } from './api/tokens/list-tokens.route';
 import { errorHandler } from './common/middleware/error-handler.middleware';
@@ -40,13 +40,15 @@ export class ExpressServer implements Server<Express> {
     app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
     app.use(helmet());
     app.use(rateLimiter);
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
 
     // Request logging
     app.use(requestLogger);
 
     // Routes
     const router = new ExpressRouter(app, 'v1');
-    router.mount(LoginRoute.create(() => {}));
+    router.mount(GetAccountRoute.create(container));
     router.mount(CreateAccountRoute.create(container));
     router.mount(ListTokensRoute.create(container));
     router.mount(HealthCheckRoute.create());
