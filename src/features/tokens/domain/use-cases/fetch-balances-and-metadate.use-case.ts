@@ -3,15 +3,15 @@ import { inject, injectable } from 'inversify';
 
 import { Token } from '../entities/token';
 import { EthereumExplorerService } from '../services/ethereum-explorer.service';
-import { FetchTokensMetadata } from './fetch-tokens-metadata.use-case';
+import { FetchTokensMetadataUseCase } from './fetch-tokens-metadata.use-case';
 
 @injectable()
-export class FetchBalancesAndMetadata implements UseCase<Token[]> {
+export class FetchBalancesAndMetadataUseCase implements UseCase<Token[]> {
   static Token = 'FetchBalancesAndMetadata';
 
   constructor(
     @inject(EthereumExplorerService.Token) private explorerService: EthereumExplorerService,
-    @inject(FetchTokensMetadata.Token) private fetchTokensMetadata: FetchTokensMetadata
+    @inject(FetchTokensMetadataUseCase.Token) private fetchTokensMetadata: FetchTokensMetadataUseCase
   ) {}
 
   async execute(address: string): Promise<Result<Token[]>> {

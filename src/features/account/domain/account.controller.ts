@@ -1,12 +1,16 @@
 import { Result } from '@soapjs/soap';
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 
-import { Account } from './account';
+import { Account } from './entities/account';
+import { CreateAccountUseCase } from './use-cases/create-account.use-case';
 
 @injectable()
 export class AccountController {
   public static Token = 'AccountController';
-  public async createAccount(): Promise<Result<Account>> {
-    return Result.withContent({});
+
+  constructor(@inject(CreateAccountUseCase.Token) private createAccountUseCase: CreateAccountUseCase) {}
+
+  public async createAccount(address: string): Promise<Result<Account>> {
+    return this.createAccountUseCase.execute(address);
   }
 }

@@ -9,7 +9,7 @@ import { TokenMetadataRepository } from '../repositories/token-metadata.reposito
 import { EthereumExplorerService } from '../services/ethereum-explorer.service';
 
 @injectable()
-export class FetchTokensMetadata implements UseCase<TokenMetadata[]> {
+export class FetchTokensMetadataUseCase implements UseCase<TokenMetadata[]> {
   static Token = 'FetchTokensMetadata';
 
   constructor(

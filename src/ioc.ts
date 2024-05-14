@@ -6,8 +6,11 @@ import { Logger } from './common/types';
 import { Config } from './common/utils/envConfig';
 import {
   AccountController,
-  FetchBalancesAndMetadata,
-  FetchTokensMetadata,
+  AccountMongoMapper,
+  AccountRepository,
+  CreateAccountUseCase,
+  FetchBalancesAndMetadataUseCase,
+  FetchTokensMetadataUseCase,
   TokenMetadataMongoMapper,
   TokenMetadataRepository,
   TokensController,
@@ -37,6 +40,14 @@ export const buildContainer = async (config: Config, logger: Logger) => {
     })
   );
 
+  ioc.bind<AccountRepository>(AccountRepository.Token).toConstantValue(
+    new RepositoryImpl({
+      collection: new MongoCollection(mongoSource, 'accounts'),
+      mapper: new AccountMongoMapper(),
+      queries: new MongoQueryFactory(),
+    })
+  );
+
   /**
    * Controllers
    */
@@ -46,8 +57,9 @@ export const buildContainer = async (config: Config, logger: Logger) => {
   /**
    * Use cases
    */
-  ioc.bind<FetchBalancesAndMetadata>(FetchBalancesAndMetadata.Token).to(FetchBalancesAndMetadata);
-  ioc.bind<FetchTokensMetadata>(FetchTokensMetadata.Token).to(FetchTokensMetadata);
+  ioc.bind<FetchBalancesAndMetadataUseCase>(FetchBalancesAndMetadataUseCase.Token).to(FetchBalancesAndMetadataUseCase);
+  ioc.bind<FetchTokensMetadataUseCase>(FetchTokensMetadataUseCase.Token).to(FetchTokensMetadataUseCase);
+  ioc.bind<CreateAccountUseCase>(CreateAccountUseCase.Token).to(CreateAccountUseCase);
 
   return ioc;
 };
